@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dorm.mapper.StudentMapper">
+
+    <sql id="where">
+        <where>
+            <if test="studentVo.id!=null and studentVo.id!=''">
+                and  stu.stu_id like '%${studentVo.id}%'
+            </if>
+            <if test="studentVo.collegeId!=null and studentVo.collegeId!=''">
+                and stu.college_id=#{studentVo.collegeId}
+            </if>
+            <if test="studentVo.hostelId!=null and studentVo.hostelId!=''">
+                and h.hostel_id=#{studentVo.hostelId}
+            </if>
+            <if test="studentVo.sex!=2">
+                and stu.sex=#{studentVo.sex}
+            </if>
+            <if test="studentVo.name!=null and studentVo.name!=''">
+                and  stu.stu_name like '%${studentVo.name}%'
+            </if>
+            <if test="studentVo.subjectId!=null and studentVo.subjectId!=''">
+                and stu.subject_id=#{studentVo.subjectId}
+            </if>
+        </where>
+
+    </sql>
+
+    <insert id="add">
+        insert into student
+        values (#{student.id},#{student.name},#{student.sex}
+        ,#{student.collegeId},#{student.subjectId},#{student.password}
+        ,#{student.age},#{student.telephone},#{student.time})
+    </insert>
+
+    <update id="setByStuId">
+        update student set telephone=#{telephone},time=#{time}
+        where stu_id=#{id}
+    </update>
+    <update id="infoModify">
+         update student set password=#{password}
+        where stu_id=#{id}
+    </update>
+    <update id="edit">
+         update student set stu_name=#{student.name},sex=#{student.sex},college_id=#{student.collegeId},subject_id=#{student.subjectId}
+         ,telephone=#{student.telephone},time=null
+        where stu_id=#{student.id}
+    </update>
+    <delete id="remove">
+        delete from student
+        where stu_id in 
+        <foreach collection="split" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="count" resultType="java.lang.Integer">
+        select count(stu.stu_id)
+        from student stu left join college c on stu.college_id = c.id left join college s on s.id=stu.subject_id and s.college_id=c.id
+        left join stu_bed sb on stu.stu_id = sb.stu_id left join hostel h on h.hostel_id=sb.hostel_id
+        <include refid="where"/>
+    </select>
+    <select id="list" resultType="com.dorm.vo.StudentVo">
+        select stu.stu_id id,stu.stu_name name,stu.sex sex,stu.college_id collegeId,c.name collegeName,stu.subject_id subjectId
+        ,s.name subjectName,stu.age age,stu.telephone telephone,sb.bedroom_id bedroomId,h.hostel_id hostelId,h.name hostelName
+        ,stu.time time
+     from student stu left join college c on stu.college_id = c.id left join college s on s.id=stu.subject_id and s.college_id=c.id
+     left join stu_bed sb on stu.stu_id = sb.stu_id left join hostel h on h.hostel_id=sb.hostel_id
+     <include refid="where"/>
+     limit #{offset},#{pageNumber}
+    </select>
+    <select id="findByStuId" resultType="com.dorm.vo.StudentVo">
+          select stu.stu_id id,stu.stu_name name,stu.sex sex,stu.college_id collegeId,c.name collegeName,stu.subject_id subjectId
+        ,s.name subjectName,stu.age age,stu.telephone telephone,sb.bedroom_id bedroomId,h.hostel_id hostelId,h.name hostelName
+        ,stu.time time,h.telephone tel
+         from student stu left join college c on stu.college_id = c.id left join college s on s.id=stu.subject_id and s.college_id=c.id
+         left join stu_bed sb on stu.stu_id = sb.stu_id left join hostel h on h.hostel_id=sb.hostel_id
+         where stu.stu_id=#{id}
+    </select>
+    <select id="findBedroomStudent" resultType="com.dorm.entity.Student">
+        select sb.stu_id id,s.stu_name name,s.telephone telephone,s.time time
+        from stu_bed sb left join student s on sb.stu_id = s.stu_id
+        where sb.hostel_id=#{hostelId} and sb.bedroom_id=#{bedroomId}
+    </select>
+    <select id="login" resultType="com.dorm.entity.Student">
+        select stu_id id, stu_name name
+        from student
+        where stu_id=#{id} and password=#{password}
+    </select>
+</mapper>

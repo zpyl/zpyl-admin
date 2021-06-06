@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dorm.mapper.BedroomMapper">
+
+    <sql id="select">
+        <where>
+            <if test="hostelId!=null and hostelId!='' and hostelId!=0">
+                and h.hostel_id=#{hostelId}
+            </if>
+            <if test="collegeId!=null and collegeId!='' and collegeId!=0">
+                and c.id=#{collegeId}
+            </if>
+            <if test="subjectId!=null and subjectId!='' and subjectId!=0">
+                and s.id=#{subjectId}
+            </if>
+        </where>
+    </sql>
+    <update id="set">
+        update bedroom set college_id=#{collegeId},subject_id=#{subjectId}
+        where hostel_id=#{hostelId} and bedroom_id=#{bedroomId}
+    </update>
+    <update id="update">
+        update bedroom set number=#{bedroom.number},is_full=#{bedroom.isFull}
+        where hostel_id=#{bedroom.hostelId} and bedroom_id=#{bedroom.bedroomId}
+    </update>
+
+    <resultMap id="resultVo" type="com.dorm.vo.BedroomVo">
+        <result column="hostelId" property="hostelId"/>
+        <result column="hostelName" property="hostelName"/>
+        <result column="bedroomId" property="bedroomId"/>
+        <result column="subjectName" property="subjectName"/>
+        <result column="maxNumber" property="maxNumber"/>
+        <result column="number" property="number"/>
+        <result column="is_full" property="full"/>
+        <result column="collegeName" property="collegeName"/>
+        <result column="sex" property="sex"/>
+    </resultMap>
+
+    <insert id="add">
+        insert into bedroom
+        values (#{hostel},#{bedroom},0,0,#{people},0,0);
+    </insert>
+    <delete id="removeByhostelId">
+        delete from bedroom
+        where hostel_id=#{hostelId}
+    </delete>
+    <delete id="removeByhostelIds">
+        delete from bedroom where hostel_id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="count" resultType="java.lang.Integer">
+        select count(b.bedroom_id)
+        from bedroom b left join hostel h on b.hostel_id = h.hostel_id
+        left join college c on b.college_id = c.id
+        left join college s on s.college_id =c.id and s.id=b.subject_id
+        <include refid="select"/>
+    </select>
+    <select id="list" resultMap="resultVo">
+        select b.hostel_id hostelId,h.name hostelName,b.bedroom_id bedroomId,h.sex sex,
+               c.name collegeName,s.name subjectName,b.max_number maxNumber,b.number number,b.is_full is_full
+        from bedroom b left join hostel h on b.hostel_id = h.hostel_id
+                       left join college c on b.college_id = c.id
+                       left join college s on s.college_id =c.id and s.id=b.subject_id
+        <include refid="select"/>
+    limit #{offset},#{pageNumber}
+    </select>
+    <select id="infoLook" resultType="com.dorm.entity.Bedroom">
+        select bedroom_id bedroomId
+        from bedroom
+        where hostel_id=#{hostelId} and college_id=#{collegeId} and subject_id=#{subjectId} and is_full=0
+    </select>
+    <select id="findByid" resultType="com.dorm.entity.Bedroom">
+        select hostel_id hostelId, bedroom_id bedroomId, max_number maxNumber, number number, is_full isFull
+        from bedroom
+        where hostel_id=#{hostelId} and bedroom_id=#{bedroomId}
+    </select>
+</mapper>

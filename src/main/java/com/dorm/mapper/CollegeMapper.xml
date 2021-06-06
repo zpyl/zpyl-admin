@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dorm.mapper.CollegeMapper">
+    <resultMap id="resultMap" type="com.dorm.entity.College">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="college_id" property="collegeId"/>
+        <result column="is_college" property="isCollege"/>
+    </resultMap>
+    <select id="college" resultMap="resultMap">
+        select *
+        from college
+        where is_college=1
+    </select>
+    <select id="subject" resultMap="resultMap">
+        select *
+        from college
+        where college_id=#{collegeId}
+    </select>
+    <select id="collegeFindName" resultType="java.lang.Integer">
+        select id
+        from college
+        where name=#{collegeName} and is_college=1
+    </select>
+    <select id="subjectFindName" resultType="java.lang.Integer">
+         select id
+        from college
+        where name=#{subjectName} and is_college=0 and college_id=#{collegeId}
+    </select>
+</mapper>

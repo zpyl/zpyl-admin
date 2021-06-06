@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+  <!-- 导入资源文件 db.properties-->
+  <context:property-placeholder location="classpath:db.properties"/>
+
+  <!-- 配置dbcp连接池参数使用Spring表达式来传值 -->
+  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+        destroy-method="close">
+    <property name="driverClassName" value="${jdbc.driver}"/>
+    <property name="username" value="${jdbc.user}"/>
+    <property name="password" value="${jdbc.password}"/>
+    <property name="url" value="${jdbc.url}"/>
+
+
+   <!--池中不会被释放的最多空闲连接数量-->
+    <property name="maxIdle" value="10"/>
+    <!--在抛出异常之前，池等待连接被回收的最长时间-->
+    <property name="maxWait" value="10000"/>
+    <!--不新建连接的条件下，池中保持空闲的最小连接数-->
+    <property name="minIdle" value="5"/>
+
+    <property name="validationQuery" value="SELECT 1"/>
+    <!--取得连接时是否进行有效验证-->
+    <property name="testOnBorrow" value="false"/>
+    <!--连接空闲时是否进行有效验证-->
+    <property name="testWhileIdle" value="true"/>
+    <!--他们两个配合，可以持续更新连接池中的连接对象，当timeBetweenEvictionRunsMillis 大于0时，-->
+    <!--每过timeBetweenEvictionRunsMillis 时间，就会启动一个线程，校验连接池中闲置时间超过minEvictableIdleTimeMillis的连接对象。-->
+    <property name="timeBetweenEvictionRunsMillis" value="18800"/>
+    <property name="minEvictableIdleTimeMillis" value="10000"/>
+
+
+    <!-- 连接池启动时的初始值 -->
+    <property name="initialSize" value="${initialSize}" />
+    <!-- 连接池的最大值 -->
+    <property name="maxActive" value="${maxActive}" />
+  </bean>
+  <!-- 配置一个bean SqlSessionFactory对象-->
+  <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <!-- 配置连接池 -->
+    <property name="dataSource" ref="dataSource"/>
+    <!-- MyBatis的核心文件 -->
+    <property name="configLocation" value="classpath:mybatis/SqlMapConfig.xml"/>
+  </bean>
+
+
+  <!-- 配置包扫描器 -->
+  <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+    <!-- 配置要扫描的包 -->
+    <property name="basePackage" value="com.dorm.mapper" />
+  </bean>
+</beans>

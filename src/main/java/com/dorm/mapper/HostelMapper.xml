@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dorm.mapper.HostelMapper">
+    <resultMap id="resultMap" type="com.dorm.entity.Hostel">
+        <id column="hostel_id" property="hostelId"/>
+        <result column="name" property="name"/>
+        <result column="sex" property="sex"/>
+        <result column="floor" property="floor"/>
+        <result column="number" property="number"/>
+        <result column="people" property="people"/>
+        <result column="telephone" property="telephone"/>
+        <result column="address" property="address"/>
+    </resultMap>
+    <insert id="add">
+        insert into hostel (name,sex,floor,number,people,address,telephone)
+        values (#{hostel.name},#{hostel.sex},#{hostel.floor},#{hostel.number},#{hostel.people},#{hostel.address},#{hostel.telephone})
+    </insert>
+    <update id="edit">
+        update  hostel set name=#{hostel.name},sex=#{hostel.sex},floor=#{hostel.floor},
+		number=#{hostel.number},people=#{hostel.people},address=#{hostel.address},telephone=#{hostel.telephone}
+		where hostel_id=#{hostel.hostelId}
+    </update>
+    <delete id="remove">
+        delete from hostel where hostel_id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="count" resultType="java.lang.Integer">
+        select count(hostel_id)
+        from hostel
+    </select>
+    <select id="list" resultMap="resultMap">
+        select *
+        from hostel
+    </select>
+    <select id="findByHostelId" resultMap="resultMap">
+        select *
+        from hostel
+        where hostel_id=#{hostelId}
+    </select>
+    <select id="info" resultType="com.dorm.entity.Hostel">
+        select hostel_id hostelId,name
+        from hostel
+    </select>
+    <select id="getKey" resultType="java.lang.Integer">
+       select LAST_INSERT_ID()
+    </select>
+    <select id="infoHostel" resultType="com.dorm.entity.Hostel">
+        select distinct h.hostel_id hostelId, h.name name
+        from hostel h left join bedroom b on h.hostel_id=b.hostel_id
+        where h.sex=#{sex} and b.college_id=#{collegeId} and b.subject_id=#{subjectId}
+    </select>
+</mapper>

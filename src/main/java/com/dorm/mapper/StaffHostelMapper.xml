@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dorm.mapper.StaffHostelMapper">
+    <insert id="add">
+        insert into staff_hostel (staff_id,hostel_id)
+        values (#{staffId},#{hostelId})
+    </insert>
+    <delete id="removeByStaffId">
+        delete from staff_hostel
+        where staff_id=#{staffId}
+    </delete>
+    <delete id="removeByHostel">
+        delete from staff_hostel where hostel_id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="findHostelByStaffId" resultType="com.dorm.entity.Hostel">
+        select sh.hostel_id hostelId,h.name name
+        from staff_hostel sh left join hostel h on sh.hostel_id=h.hostel_id
+        where sh.staff_id=#{staffId}
+    </select>
+</mapper>

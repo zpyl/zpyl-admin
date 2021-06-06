@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dorm.mapper.RepairMapper">
+    <insert id="add">
+        insert into repair values (#{repair.id},#{repair.stuId},#{repair.bedroomId},#{repair.hostelId},#{repair.name},#{repair.telephone}
+        ,#{repair.reason},#{repair.status},#{repair.time}
+        )
+    </insert>
+    <sql id="where">
+        <where>
+            <if test="hostelId!=null and hostelId!=''">
+                and r.hostel_id=#{hostelId}
+            </if>
+            <if test="bedroomId!=null and bedroomId!=''">
+                and r.bedroom_id=#{bedroomId}
+            </if>
+        </where>
+    </sql>
+
+    <update id="edit">
+        update repair set status=true
+        where id in
+        <foreach collection="split" open="(" close=")" separator="," item="stuId">
+            #{stuId}
+        </foreach>
+    </update>
+    <delete id="remove">
+        delete from repair
+        where id in
+            <foreach collection="split" open="(" close=")" separator="," item="stuId">
+                #{stuId}
+            </foreach>
+    </delete>
+    <select id="count" resultType="java.lang.Integer">
+        select count(r.stu_id)
+        from repair r
+        <include refid="where"/>
+    </select>
+    <select id="list" resultType="com.dorm.vo.RepairVo">
+        select r.id id, r.stu_id stuId,r.bedroom_id bedroomId,r.name name,r.telephone telephone,
+            r.reason reason,r.status status,h.name hostelName ,r.time time
+        from repair r left join hostel h on r.hostel_id=h.hostel_id
+        <include refid="where"/>
+    </select>
+</mapper>

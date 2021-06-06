@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dorm.mapper.StuBedMapper">
+    <insert id="add">
+        insert into stu_bed
+        values (#{stuId},#{hostelId},#{bedroomId})
+    </insert>
+    <delete id="deleteByStuId">
+        delete from stu_bed
+        where stu_id=#{stuId}
+    </delete>
+    <select id="findByStuId" resultType="com.dorm.entity.StuBed">
+        select stu_id stuId,hostel_id hostelId,bedroom_id bedroomId
+        from stu_bed
+        where stu_id=#{stuId}
+    </select>
+</mapper>
