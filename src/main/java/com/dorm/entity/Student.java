@@ -1,5 +1,9 @@
 package com.dorm.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.jboss.logging.Field;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -9,29 +13,37 @@ import java.util.Date;
  * @author makejava
  * @since 2020-11-14 14:00:54
  */
+@Table(name = "student")
 public class Student implements Serializable {
     private static final long serialVersionUID = -70546311454501663L;
     /**
      * 学号
      */
+    @Id
+    @Column(name = "stu_id")
     private String id;
 
+
+    @Column(name="stu_name")
     private String name;
     /**
      * 0：男 1：女
      */
-    private Integer sex;
+    private String sex;
     /**
      * 学院
      */
+    @Column(name = "college_id")
     private Integer collegeId;
     /**
      * 专业号
      */
+    @Column(name = "subject_id")
     private Integer subjectId;
     /**
      * 密码：默认为学号
      */
+    @JsonIgnore
     private String password;
 
     private Integer age;
@@ -43,7 +55,7 @@ public class Student implements Serializable {
     private Date time;
 
 
-    public Student(String id, String name, Integer sex, Integer collegeId, Integer subjectId, String password, Integer age, String telephone, Date time) {
+    public Student(String id, String name, String sex, Integer collegeId, Integer subjectId, String password, Integer age, String telephone, Date time) {
         this.id = id;
         this.name = name;
         this.sex = sex;
@@ -75,11 +87,11 @@ public class Student implements Serializable {
         this.name = name;
     }
 
-    public Integer getSex() {
+    public String getSex() {
         return sex;
     }
 
-    public void setSex(Integer sex) {
+    public void setSex(String sex) {
         this.sex = sex;
     }
 
@@ -124,7 +136,7 @@ public class Student implements Serializable {
     }
 
     public Date getTime() {
-        return (Date) time.clone();
+        return time;
     }
 
     public void setTime(Date time) {

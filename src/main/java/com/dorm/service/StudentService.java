@@ -8,11 +8,11 @@ import com.dorm.vo.StudentVo;
 public interface StudentService {
     /**
      * 展示学生信息
-     * @param offset
-     * @param pageNumber
-     * @param studentVo
+     * @param offset 起始页码
+     * @param pageNumber 每页长度
+     * @param student 查询条件
      */
-    TableUtil list(Integer offset, Integer pageNumber, StudentVo studentVo);
+    TableUtil list(Integer offset, Integer pageNumber, Student student);
 
     /**
      * 根据学号进行查找
@@ -47,8 +47,9 @@ public interface StudentService {
     /**
      * 增加学生信息
      * @param student
+     * @return
      */
-    void add(Student student);
+    Boolean add(Student student);
 
     /**
      * 学生换专业
@@ -59,8 +60,22 @@ public interface StudentService {
 
     /**
      * 学生退学
-     * @param split
+     * @param stuId
      * @return
      */
-    Result remove(String[] split);
+    Boolean remove(String stuId);
+
+    /**
+     * 根据学号查询学生信息
+     * @param stuId 学号
+     * @return
+     */
+    Student findStudentById(String stuId);
+
+    /**
+     * 修改学生信息
+     * @param student 修改学生的信息
+     * @return 成功与否
+     */
+    Boolean updateStudent(Student student);
 }

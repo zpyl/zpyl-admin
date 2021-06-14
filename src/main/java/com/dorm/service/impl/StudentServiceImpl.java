@@ -10,10 +10,11 @@ import com.dorm.service.StudentService;
 import com.dorm.until.Result;
 import com.dorm.until.TableUtil;
 import com.dorm.vo.StudentVo;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.util.List;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -29,9 +30,23 @@ public class StudentServiceImpl implements StudentService {
      * @param pageNumber
      * @param studentVo
      */
+//    @Override
+//    public TableUtil list(Integer offset, Integer pageNumber, StudentVo studentVo) {
+//        return new TableUtil(studentMapper.count(studentVo),studentMapper.list(offset,pageNumber,studentVo));
+//    }
+
+    /**
+     * 展示学生信息
+     *
+     * @param offset     起始页码
+     * @param pageNumber 每页长度
+     * @param student    查询条件
+     */
     @Override
-    public TableUtil list(Integer offset, Integer pageNumber, StudentVo studentVo) {
-        return new TableUtil(studentMapper.count(studentVo),studentMapper.list(offset,pageNumber,studentVo));
+    public TableUtil list(Integer offset, Integer pageNumber, Student student) {
+        PageHelper.startPage(offset,pageNumber);
+        List<StudentVo> studentVo = studentMapper.listStudent(student);
+        return new TableUtil(studentMapper.countStudent(student),studentVo);
     }
 
     /**
@@ -115,12 +130,12 @@ public class StudentServiceImpl implements StudentService {
      * 增加学生信息
      *
      * @param student
+     * @return
      */
     @Override
-    public void add(Student student) {
+    public Boolean add(Student student) {
         student.setPassword(student.getId());
-        student.setTime(new Date());
-        studentMapper.add(student);
+        return studentMapper.insert(student)>0;
     }
 
     /**
@@ -140,16 +155,34 @@ public class StudentServiceImpl implements StudentService {
 
     /**
      * 学生退学
-     * @param split
+     * @param stuId
      * @return
      */
     @Override
-    public Result remove(String[] split) {
-        //先退宿
-        stuBedRemove(split);
-        //退学
-        studentMapper.remove(split);
-        return Result.ok();
+    public Boolean remove(String stuId) {
+       return this.studentMapper.deleteByPrimaryKey(stuId)>0;
+    }
+
+    /**
+     * 根据学号查询学生信息
+     *
+     * @param stuId 学号
+     * @return
+     */
+    @Override
+    public Student findStudentById(String stuId) {
+        return this.studentMapper.selectByPrimaryKey(stuId);
+    }
+
+    /**
+     * 修改学生信息
+     *
+     * @param student 修改学生的信息
+     * @return 成功与否
+     */
+    @Override
+    public Boolean updateStudent(Student student) {
+        return this.studentMapper.updateByPrimaryKey(student)>0;
     }
 
 }

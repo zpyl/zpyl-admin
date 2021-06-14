@@ -1,7 +1,6 @@
 package com.dorm.until;
 
 import com.dorm.entity.Excel;
-import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -135,7 +134,7 @@ public class ReadExcel {
                         row.getCell(c).setCellType(Cell.CELL_TYPE_STRING);
                         excel.setStuId(row.getCell(c).getStringCellValue());
                     } else if (c == 2) {//性别
-                        excel.setSex(cell.getStringCellValue().equals("男")?0:1);
+                        excel.setSex(cell.getStringCellValue().equals("男")?"0":"1");
                     }else if(c==3){//院
                         excel.setCollegeName(cell.getStringCellValue());
                     }else if(c==4){//专业

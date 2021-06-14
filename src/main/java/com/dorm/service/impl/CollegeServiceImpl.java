@@ -19,7 +19,6 @@ public class CollegeServiceImpl implements CollegeService {
     @Override
     public List<College> college() {
         List<College> college = collegeMapper.college();
-        college.add(new College(0,"全部",0,true));
         return college;
     }
 
@@ -31,7 +30,57 @@ public class CollegeServiceImpl implements CollegeService {
     @Override
     public List<College> subject(Integer collegeId) {
         List<College> subject = collegeMapper.subject(collegeId);
-        subject.add(new College(0,"全部",0,false));
         return subject;
+    }
+
+    /**
+     * 新增学院
+     *
+     * @param college 学院
+     * @return 是否成功
+     */
+    @Override
+    public boolean addCollege(College college) {
+        college.setIsCollege(true);
+        college.setCollegeId(0);
+        return this.collegeMapper.insertSelective(college)>0;
+    }
+    /**
+     * 新增专业
+     *
+     * @param college 学院
+     * @return 是否成功
+     */
+    @Override
+    public boolean addSubject(College college) {
+        college.setIsCollege(false);
+        return this.collegeMapper.insertSelective(college)>0;
+    }
+    /**
+     * 修改学院
+     *
+     * @param college 学院
+     * @return 是否成功
+     */
+    @Override
+    public boolean updateCollege(College college) {
+        return this.collegeMapper.updateByPrimaryKeySelective(college)>0;
+    }
+    /**
+     * 删除学院或专业
+     *
+     * @param id 学院或专业id
+     * @return 是否成功
+     */
+    @Override
+    public boolean remove(Integer id) {
+        //先查询所在的id是否是学院
+        if (this.collegeMapper.selectByPrimaryKey(id).getIsCollege()) {
+            //是学院
+            //删除学院下所有的专业
+            this.collegeMapper.deleteSubjuctByCollegeId(id);
+        }
+        //删除id
+        return this.collegeMapper.deleteByPrimaryKey(id)>0;
     }
 }

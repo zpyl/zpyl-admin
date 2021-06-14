@@ -10,7 +10,7 @@ public class Excel {
     /**
      * 0：男 1：女
      */
-    private Integer sex;
+    private String sex;
     /**
      * 学院
      */
@@ -58,11 +58,11 @@ public class Excel {
         this.stuName = stuName;
     }
 
-    public Integer getSex() {
+    public String getSex() {
         return sex;
     }
 
-    public void setSex(Integer sex) {
+    public void setSex(String sex) {
         this.sex = sex;
     }
 

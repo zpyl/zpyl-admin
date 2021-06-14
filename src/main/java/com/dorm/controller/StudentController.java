@@ -8,13 +8,14 @@ import com.dorm.until.TableUtil;
 import com.dorm.vo.StaffVo;
 import com.dorm.vo.StudentVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequestMapping("student/student")
+@RestController
+@RequestMapping("student")
 public class StudentController {
     @Autowired
     private StudentService studentService;
@@ -28,10 +29,72 @@ public class StudentController {
      * 加载数据
      */
     @RequestMapping("list")
-    @ResponseBody
-    public TableUtil list(Integer offset,Integer pageNumber,StudentVo studentVo){
-        return studentService.list(offset,pageNumber,studentVo);
+    public TableUtil list(Integer offset,Integer pageNumber,Student student){
+        return studentService.list(offset,pageNumber,student);
     }
+
+    /**
+     * 根据stuId查找学生信息
+     * @param stuId 学号
+     * @return 状态码 200 学生信息
+     *         状态码 204 无数据
+     */
+    @GetMapping("findByStuId")
+    public ResponseEntity<Student> findStudentById(String stuId){
+        Student student = studentService.findStudentById(stuId);
+        if(student==null){
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(student);
+    }
+
+    /**
+     * 新增学生信息
+     * @param student 添加的学生信息
+     * @return 状态码 200 成功
+     *         状态码 202 失败
+     */
+    @PostMapping("addStudent")
+    public ResponseEntity<Void> addStudent(@RequestBody Student student){
+        Boolean bool=studentService.add(student);
+        if (!bool){
+            //失败
+            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 修改学生信息
+     * @param student 修改的学生信息
+     * @return 状态码 200 成功
+     *         状态码 202 失败
+     */
+    @PostMapping("updateStudent")
+    public ResponseEntity<Void> updateStudent(@RequestBody Student student){
+        Boolean bool=studentService.updateStudent(student);
+        if (!bool){
+            //失败
+            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 删除学生
+     *@return 状态码 200 成功
+     *        状态码 202 失败
+     */
+    @RequestMapping("remove")
+    @ResponseBody
+    public ResponseEntity<Void> remove(String stuId){
+        Boolean bool = studentService.remove(stuId);
+        if(bool){
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
+
     /**
      * 学生入住
      */
@@ -48,14 +111,7 @@ public class StudentController {
     public Result stuBedRemove(String stuIds){
         return studentService.stuBedRemove(stuIds.split(","));
     }
-    /**
-     * 根据stuId查找学生信息
-     */
-    @RequestMapping("findByStuId")
-    @ResponseBody
-    public StudentVo findByStuId(String stuId){
-        return studentService.findByStuId(stuId);
-    }
+
 
     /**
      * 增加学生时判断学号是否重复
@@ -71,17 +127,7 @@ public class StudentController {
         }
         return true;
     }
-    /**
-     * 新增学生信息
-     * @param student
-     * @return
-     */
-    @RequestMapping("add")
-    @ResponseBody
-    public Result add(Student student){
-        studentService.add(student);
-        return Result.ok();
-    }
+
 
     /**
      * 跳转到学生换专业界面
@@ -99,14 +145,7 @@ public class StudentController {
     public Result edit(Student student){
         return studentService.edit(student);
     }
-    /**
-     * 学生退学
-     */
-    @RequestMapping("remove")
-    @ResponseBody
-    public Result remove(String stuIds){
-        return studentService.remove(stuIds.split(","));
-    }
+
 
 
 }

@@ -1,12 +1,17 @@
 package com.dorm.mapper;
 
 import com.dorm.entity.College;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
 
-public interface CollegeMapper {
+public interface CollegeMapper extends Mapper<College> {
 
+    @Select("select name where id=#{id}")
+    String name(Integer id);
     /**
      * 查询学院信息
      */
@@ -32,4 +37,7 @@ public interface CollegeMapper {
      * @return
      */
     int subjectFindName(@Param("collegeId") int collegeId, @Param("subjectName") String subjectName);
+
+    @Delete("delete from college where college_id=#{id}")
+    void deleteSubjuctByCollegeId(Integer id);
 }

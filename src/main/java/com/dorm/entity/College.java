@@ -1,5 +1,6 @@
 package com.dorm.entity;
 
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -8,11 +9,13 @@ import java.io.Serializable;
  * @author makejava
  * @since 2020-11-14 14:00:50
  */
+@Table(name = "college")
 public class College implements Serializable {
     private static final long serialVersionUID = -65255978094839811L;
     /**
      * 编号
      */
+    @Id
     private Integer id;
     /**
      * 名称
@@ -21,10 +24,12 @@ public class College implements Serializable {
     /**
      * 学院id
      */
+    @Column(name = "college_id")
     private Integer collegeId;
     /**
      * 1：是学院 0不是学院
      */
+    @Column(name = "is_college")
     private Boolean isCollege;
 
 
