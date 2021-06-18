@@ -4,10 +4,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 /**
- * (College)实体类
- *
- * @author makejava
- * @since 2020-11-14 14:00:50
+ * 学院/专业 实体类
  */
 @Table(name = "college")
 public class College implements Serializable {

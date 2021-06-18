@@ -1,5 +1,6 @@
 package com.dorm.vo;
 
+import com.dorm.entity.Staff;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;

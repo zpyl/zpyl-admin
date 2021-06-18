@@ -1,16 +1,22 @@
 package com.dorm.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
- * (Staff)实体类
- *
- * @author makejava
- * @since 2020-11-14 14:00:52
+ * 职工实体类
  */
+@Table(name="staff")
 public class Staff implements Serializable {
     private static final long serialVersionUID = -71943871972489639L;
 
+    @Id
+    @Column(name="staff_id")
     private Integer id;
 
     private String name;
@@ -19,12 +25,17 @@ public class Staff implements Serializable {
 
     private String sex;
 
+    /**
+     * 是否是超级管理员
+     */
+    @Column(name = "is_super")
     private Boolean isSuper;
     /**
      * 入职时间
      */
-    private Object time;
+    private Date time;
 
+    @JsonIgnore
     private String password;
 
     private String telephone;
@@ -70,11 +81,11 @@ public class Staff implements Serializable {
         this.isSuper = isSuper;
     }
 
-    public Object getTime() {
+    public Date getTime() {
         return time;
     }
 
-    public void setTime(Object time) {
+    public void setTime(Date time) {
         this.time = time;
     }
 

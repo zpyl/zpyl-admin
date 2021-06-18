@@ -5,10 +5,12 @@ import com.dorm.mapper.StaffHostelMapper;
 import com.dorm.mapper.StaffMapper;
 import com.dorm.service.StaffService;
 import com.dorm.until.Result;
-import com.dorm.until.TableUtil;
 import com.dorm.vo.StaffVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class StaffServiceImpl implements StaffService {
@@ -18,11 +20,12 @@ public class StaffServiceImpl implements StaffService {
     @Autowired
     private StaffHostelMapper staffHostelMapper;
     /**
-     * 职工信息
+     * 查询所有的职工信息
+     * @return 职工集合
      */
     @Override
-    public TableUtil list() {
-        return new TableUtil(staffMapper.count(),staffMapper.list());
+    public List<Staff> list() {
+        return staffMapper.selectAll();
     }
 
     /**
@@ -55,8 +58,8 @@ public class StaffServiceImpl implements StaffService {
      * 根据员编号查找指定的数据
      */
     @Override
-    public StaffVo findByStaffId(int id) {
-        return staffMapper.findByStaffId(id);
+    public Staff findByStaffId(int id) {
+        return staffMapper.selectByPrimaryKey(id);
     }
 
     /**
@@ -94,4 +97,40 @@ public class StaffServiceImpl implements StaffService {
     public void infoModify(String staffId, String pass) {
         staffMapper.infoModify(staffId,pass);
     }
+
+    /**
+     * 添加职工信息
+     *
+     * @param staff 职工信息
+     * @return
+     */
+    @Override
+    public Boolean addStaff(Staff staff) {
+        staff.setIsSuper(false);
+        staff.setPassword(staff.getTelephone());
+        return this.staffMapper.insertSelective(staff)>0;
+    }
+
+    /**
+     * 修改职工信息
+     *
+     * @param staff 职工信息
+     * @return
+     */
+    @Override
+    public Boolean updateStaff(Staff staff) {
+        return this.staffMapper.updateByPrimaryKeySelective(staff)>0;
+    }
+
+    /**
+     * 根据职工号删除职工信息
+     *
+     * @param staffId 职工id
+     * @return
+     */
+    @Override
+    public Boolean removeByStaffId(Integer staffId) {
+        return this.staffMapper.deleteByPrimaryKey(staffId)>0;
+    }
+
 }

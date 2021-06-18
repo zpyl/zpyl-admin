@@ -2,14 +2,16 @@ package com.dorm.service;
 
 import com.dorm.entity.Staff;
 import com.dorm.until.Result;
-import com.dorm.until.TableUtil;
 import com.dorm.vo.StaffVo;
+
+import java.util.List;
 
 public interface StaffService {
     /**
-     * 职工信息
+     * 查询所有的职工
+     * @return 职工集合
      */
-    TableUtil list();
+    List<Staff> list();
 
     /**
      * 增加员工信息
@@ -24,7 +26,7 @@ public interface StaffService {
     /**
      * 根据staffId查找指定的数据
      */
-    StaffVo findByStaffId(int staffId);
+    Staff findByStaffId(int staffId);
 
     /**
      * 修改信息
@@ -45,4 +47,25 @@ public interface StaffService {
      * @param pass
      */
     void infoModify(String staffId, String pass);
+
+    /**
+     * 添加职工信息
+     * @param staff 职工信息
+     * @return
+     */
+    Boolean addStaff(Staff staff);
+
+    /**
+     * 修改职工信息
+     * @param staff 职工信息
+     * @return
+     */
+    Boolean updateStaff(Staff staff);
+
+    /**
+     * 根据职工号删除职工信息
+     * @param staffId 职工id
+     * @return
+     */
+    Boolean removeByStaffId(Integer staffId);
 }

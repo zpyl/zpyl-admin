@@ -19,16 +19,10 @@ import org.springframework.web.bind.annotation.*;
 public class StudentController {
     @Autowired
     private StudentService studentService;
-    @RequestMapping("/stuBed_add")
-    public String stuBed_add(String id, Model model){
-        model.addAttribute("student",studentService.findByStuId(id));
-        return "student/stuBed_add";
-    }
-
     /**
      * 加载数据
      */
-    @RequestMapping("list")
+    @GetMapping("list")
     public TableUtil list(Integer offset,Integer pageNumber,Student student){
         return studentService.list(offset,pageNumber,student);
     }
@@ -55,7 +49,7 @@ public class StudentController {
      *         状态码 202 失败
      */
     @PostMapping("addStudent")
-    public ResponseEntity<Void> addStudent(@RequestBody Student student){
+    public ResponseEntity<Void> addStudent(@RequestBody  Student student){
         Boolean bool=studentService.add(student);
         if (!bool){
             //失败
@@ -85,7 +79,7 @@ public class StudentController {
      *@return 状态码 200 成功
      *        状态码 202 失败
      */
-    @RequestMapping("remove")
+    @GetMapping("remove")
     @ResponseBody
     public ResponseEntity<Void> remove(String stuId){
         Boolean bool = studentService.remove(stuId);

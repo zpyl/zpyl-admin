@@ -3,10 +3,11 @@ package com.dorm.mapper;
 import com.dorm.entity.Staff;
 import com.dorm.vo.StaffVo;
 import org.apache.ibatis.annotations.Param;
+import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
 
-public interface StaffMapper {
+public interface StaffMapper extends Mapper<Staff> {
     /**
      * 查询总数
      */

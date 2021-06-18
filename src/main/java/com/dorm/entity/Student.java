@@ -8,10 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * (Student)实体类
- *
- * @author makejava
- * @since 2020-11-14 14:00:54
+ * 学生实体类
  */
 @Table(name = "student")
 public class Student implements Serializable {

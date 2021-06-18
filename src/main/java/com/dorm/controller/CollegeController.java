@@ -5,8 +5,10 @@ import com.dorm.service.CollegeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -17,13 +19,34 @@ import java.util.List;
 public class CollegeController {
     @Autowired
     private CollegeService collegeService;
-    @PostMapping("college")
-    public List<College> college(){
-        return collegeService.college();
+
+    /**
+     * 查询所有的学院信息
+     * @return 状态码 200 学院集合
+     *                 204 没有查询到
+     */
+    @GetMapping("college")
+    public ResponseEntity<List<College>> college(){
+        List<College> college = collegeService.college();
+        if (college==null||college.size()==0){
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(college);
     }
+
+    /**
+     * 查询学院下的专业信息
+     * @param collegeId 学院编号
+     * @return 状态码 200 专业集合
+     *                 204 没有查询到
+     */
     @GetMapping("subject")
-    public List<College> subject(Integer collegeId){
-        return collegeService.subject(collegeId);
+    public ResponseEntity<List<College>> subject(Integer collegeId){
+        List<College> subject = collegeService.subject(collegeId);
+        if (subject==null||subject.size()==0){
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(subject);
     }
 
     /**
@@ -41,7 +64,7 @@ public class CollegeController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
     /**
-     * 新增学院信息
+     * 新增专业信息
      * @param college 专业
      * @return 状态码 200 成功
      *                 202 失败
@@ -56,7 +79,7 @@ public class CollegeController {
     }
 
     /**
-     * 修改学院信息
+     * 修改学院或专业信息
      * @param college 学院
      * @return 状态码 200 成功
      *                 202 失败
@@ -70,7 +93,7 @@ public class CollegeController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
     /**
-     * 修改学院信息
+     * 删除学院信息
      * @param id 学院/专业 id
      * @return 状态码 200 成功
      *                 202 失败
